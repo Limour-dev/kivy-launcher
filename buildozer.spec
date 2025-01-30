@@ -91,7 +91,7 @@ android.api = 33
 android.minapi = 31
 
 # (int) Android SDK version to use
-android.sdk = 28
+# android.sdk = 28
 
 # (str) Android NDK version to use
 android.ndk = 25
@@ -144,7 +144,7 @@ android.ndk = 25
 #android.gradle_dependencies =
 
 # (str) python-for-android branch to use, defaults to stable
-p4a.branch = master
+p4a.branch = release-2024.01.21
 
 # (str) XML file to include as an intent filters in <activity> tag
 #android.manifest.intent_filters =
