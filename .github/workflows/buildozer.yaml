@@ -1,24 +1,20 @@
 name: buildozer
 on:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-22.04
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
+      - uses: actions/checkout@v4
+      - name: Build APK
+        uses: digreatbrian/buildozer-action@v2
         with:
-          workdir: ${{ github.workspace }}
-          buildozer_version: stable
+          python-version: 3.8
+          buildozer-cmd: buildozer -v android debug
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: ./bin/*.apk
