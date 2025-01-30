@@ -85,16 +85,16 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (int) Android API to use
-android.api = 33
+android.api = 29
 
 # (int) Minimum API required
-android.minapi = 31
+android.minapi = 24
 
 # (int) Android SDK version to use
 # android.sdk = 28
 
 # (str) Android NDK version to use
-android.ndk = 25
+android.ndk = 25b
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
