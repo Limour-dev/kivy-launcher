@@ -3,7 +3,7 @@
 import os
 from datetime import datetime
 
-from jnius import autoclass
+from jnius import autoclass, cast
 from kivy.lang import Builder
 from kivy.app import App
 from kivy.utils import platform
@@ -16,16 +16,6 @@ KIVYLAUNCHER_PATHS = os.environ.get("KIVYLAUNCHER_PATHS")
 def add_newlines(input_string, _len=50):
     return [input_string[i:i+_len] for i in range(0, len(input_string), _len)]
 
-def grant_manage_external_storage():
-    context = autoclass("org.kivy.android.PythonActivity").mActivity
-    Uri = autoclass('android.net.Uri')
-    Intent = autoclass('android.content.Intent')
-    Settings = autoclass('android.provider.Settings')
-    intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-    intent.addCategory(Intent.CATEGORY_DEFAULT)
-    intent.setData(Uri.parse(f"package:{context.getPackageName()}"))
-    context.startActivity(intent)
-
 class Launcher(App):
     paths = ListProperty()
     logs = ListProperty()
@@ -36,6 +26,40 @@ class Launcher(App):
         log = log.replace('\n', '').replace('\r', '')
         self.logs.append(f"{datetime.now().strftime('%X.%f')}: ")
         self.logs.extend(add_newlines(log))
+
+    # try to do this, it will allow you to have access to all directories and files in the storage.
+    def permissions_external_storage(self, *args):
+        from android import api_version  # 30
+        self.log(f'sdk: {api_version}')
+
+        if platform == "android":
+            PythonActivity = autoclass("org.kivy.android.PythonActivity")
+            Environment = autoclass("android.os.Environment")
+            Intent = autoclass("android.content.Intent")
+            Settings = autoclass("android.provider.Settings")
+            Uri = autoclass("android.net.Uri")
+            if api_version > 29:
+                # If you have access to the external storage, do whatever you need
+                if Environment.isExternalStorageManager():
+                    # If you don't have access, launch a new activity to show the user the system's dialog
+                    # to allow access to the external storage
+                    pass
+                else:
+                    try:
+                        activity = PythonActivity.mActivity.getApplicationContext()
+                        uri = Uri.parse("package:" + activity.getPackageName())
+                        intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
+                        currentActivity = cast(
+                            "android.app.Activity", PythonActivity.mActivity
+                        )
+                        currentActivity.startActivityForResult(intent, 101)
+                    except:
+                        intent = Intent()
+                        intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                        currentActivity = cast(
+                            "android.app.Activity", PythonActivity.mActivity
+                        )
+                        currentActivity.startActivityForResult(intent, 101)
 
     def build(self):
         self.log('start of log')
@@ -59,10 +83,7 @@ class Launcher(App):
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.READ_EXTERNAL_STORAGE])
             try:
-                from android import api_version # 30
-                self.log('sdk: ' + api_version)
-                if int(api_version) >= 30:
-                    grant_manage_external_storage()
+                self.permissions_external_storage()
             except Exception:
                 self.log(traceback.format_exc())
 
@@ -142,6 +163,7 @@ class Launcher(App):
             os.path.dirname(__file__), "..", "main.py"))
         cmd = Popen([sys.executable, main_py], env=env)
         cmd.communicate()
+        sys.exit(0)
 
     def start_android_activity(self, entry):
         self.log('starting activity')
