@@ -36,7 +36,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy, android, httpx
+requirements = python3, kivy, android, httpx, beautifulsoup4
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -85,19 +85,16 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (int) Android API to use
-android.api = 29
+android.api = 35
 
 # (int) Minimum API required
-android.minapi = 24
-
-# (int) Android SDK version to use
-# android.sdk = 28
+android.minapi = 20
 
 # (str) Android NDK version to use
 android.ndk = 25b
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
-#android.private_storage = True
+# android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
 #android.ndk_path =
