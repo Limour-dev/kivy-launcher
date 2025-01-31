@@ -149,6 +149,8 @@ p4a.branch = release-2024.01.21
 # (str) launchMode to set for the main activity
 android.manifest.launch_mode = standard
 
+android.manifest.application_attributes = android:requestLegacyExternalStorage="true"
+
 # (list) Android additionnal libraries to copy into libs/armeabi
 #android.add_libs_armeabi = libs/android/*.so
 #android.add_libs_armeabi_v7a = libs/android-v7/*.so
