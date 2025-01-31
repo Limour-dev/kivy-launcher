@@ -88,7 +88,7 @@ fullscreen = 0
 android.api = 35
 
 # (int) Minimum API required
-android.minapi = 20
+android.minapi = 25
 
 # (str) Android NDK version to use
 android.ndk = 25b
