@@ -12,6 +12,8 @@ import traceback
 
 KIVYLAUNCHER_PATHS = os.environ.get("KIVYLAUNCHER_PATHS")
 
+def add_newlines(input_string, _len=50):
+    return [input_string[i:i+_len] for i in range(0, len(input_string), _len)]
 
 class Launcher(App):
     paths = ListProperty()
@@ -20,7 +22,8 @@ class Launcher(App):
 
     def log(self, log):
         print(log)
-        self.logs.append(f"{datetime.now().strftime('%X.%f')}: {log}")
+        self.logs.append(f"{datetime.now().strftime('%X.%f')}: ")
+        self.logs.extend(add_newlines(log))
 
     def build(self):
         self.log('start of log')
