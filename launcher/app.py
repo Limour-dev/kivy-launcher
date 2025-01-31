@@ -194,4 +194,4 @@ class Launcher(App):
         self.log(f'ready to start intent {j_entrypoint} {j_orientation}')
         activity.startActivity(intent)
         self.log('activity started')
-        # System.exit(0)
+        System.exit(0)
