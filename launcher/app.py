@@ -70,7 +70,6 @@ class Launcher(App):
             self.paths.extend(KIVYLAUNCHER_PATHS.split(","))
 
         if platform == 'android':
-            from jnius import autoclass
             Environment = autoclass('android.os.Environment')
             sdcard_path = Environment.getExternalStorageDirectory()\
                 .getAbsolutePath()
@@ -174,7 +173,6 @@ class Launcher(App):
 
     def start_android_activity(self, entry):
         self.log('starting activity')
-        from jnius import autoclass
         PythonActivity = autoclass("org.kivy.android.PythonActivity")
         System = autoclass("java.lang.System")
         activity = PythonActivity.mActivity
