@@ -2,6 +2,8 @@
 
 import os
 from datetime import datetime
+
+from jnius import autoclass
 from kivy.lang import Builder
 from kivy.app import App
 from kivy.utils import platform
@@ -13,6 +15,16 @@ KIVYLAUNCHER_PATHS = os.environ.get("KIVYLAUNCHER_PATHS")
 
 def add_newlines(input_string, _len=50):
     return [input_string[i:i+_len] for i in range(0, len(input_string), _len)]
+
+def grant_manage_external_storage():
+    context = autoclass("org.kivy.android.PythonActivity").mActivity
+    Uri = autoclass('android.net.Uri')
+    Intent = autoclass('android.content.Intent')
+    Settings = autoclass('android.provider.Settings')
+    intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+    intent.addCategory(Intent.CATEGORY_DEFAULT)
+    intent.setData(Uri.parse(f"package:{context.getPackageName()}"))
+    context.startActivity(intent)
 
 class Launcher(App):
     paths = ListProperty()
@@ -46,6 +58,9 @@ class Launcher(App):
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.READ_EXTERNAL_STORAGE])
             try:
+                from android.permissions import check_permission
+                if not check_permission(Permission.MANAGE_EXTERNAL_STORAGE):
+                    grant_manage_external_storage()
                 self.log('sdk: ' + platform.sdk_version())
             except Exception:
                 self.log(traceback.format_exc())
