@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
+from kivy.resources import resource_add_path
+from kivy.core.text import LabelBase
+resource_add_path(os.path.abspath("./data/"))
+LabelBase.register('Roboto', 'msyahei.ttf')
 
 def run_entrypoint(entrypoint):
     import runpy
