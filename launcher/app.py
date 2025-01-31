@@ -61,7 +61,8 @@ class Launcher(App):
                 from android.permissions import check_permission
                 if not check_permission(Permission.MANAGE_EXTERNAL_STORAGE):
                     grant_manage_external_storage()
-                self.log('sdk: ' + platform.sdk_version())
+                from android import api_version # 30
+                self.log('sdk: ' + api_version)
             except Exception:
                 self.log(traceback.format_exc())
 
