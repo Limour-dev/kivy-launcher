@@ -85,7 +85,7 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (int) Android API to use
-android.api = 35
+android.api = 34
 
 # (int) Minimum API required
 android.minapi = 26
