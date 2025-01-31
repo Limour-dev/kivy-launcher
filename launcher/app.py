@@ -32,7 +32,8 @@ class Launcher(App):
     display_logs = BooleanProperty(False)
 
     def log(self, log):
-        print(log)
+        # print(log)
+        log = log.replace('\n', '').replace('\r', '')
         self.logs.append(f"{datetime.now().strftime('%X.%f')}: ")
         self.logs.extend(add_newlines(log))
 
@@ -58,11 +59,10 @@ class Launcher(App):
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.READ_EXTERNAL_STORAGE])
             try:
-                from android.permissions import check_permission
-                if not check_permission(Permission.MANAGE_EXTERNAL_STORAGE):
-                    grant_manage_external_storage()
                 from android import api_version # 30
                 self.log('sdk: ' + api_version)
+                if int(api_version) >= 30:
+                    grant_manage_external_storage()
             except Exception:
                 self.log(traceback.format_exc())
 
