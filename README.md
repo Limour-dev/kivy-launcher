@@ -31,6 +31,11 @@ Then just start the launcher, you should see your application listed, then press
 - Reduce to the minimum the overhead of the launcher to launch another app
 - Support landscape / portrait / sensor
 
+## Test
+```cmd
+conda create -n kivy conda-forge::kivy=2.3.0 conda-forge::python=3.8 conda-forge::pyjnius=1.6.1
+```
+
 ## Ideas
 
 - Act as a server to just launch any Kivy-based app from desktop to mobile
