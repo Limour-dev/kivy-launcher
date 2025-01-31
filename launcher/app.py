@@ -31,16 +31,6 @@ class Launcher(App):
             self.paths.extend(KIVYLAUNCHER_PATHS.split(","))
 
         if platform == 'android':
-            from android.permissions import request_permissions, Permission
-            request_permissions([Permission.READ_EXTERNAL_STORAGE])
-            try:
-                request_permissions([Permission.MANAGE_EXTERNAL_STORAGE])
-                from android.permissions import check_permission
-                self.log('MANAGE: ' + check_permission(Permission.MANAGE_EXTERNAL_STORAGE))
-            except Exception:
-                traceback.print_exc()
-
-        if platform == 'android':
             from jnius import autoclass
             Environment = autoclass('android.os.Environment')
             sdcard_path = Environment.getExternalStorageDirectory()\
@@ -51,6 +41,15 @@ class Launcher(App):
             self.paths = [os.path.expanduser("./kivy")]
 
         self.root = Builder.load_file("launcher/app.kv")
+
+        if platform == 'android':
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.READ_EXTERNAL_STORAGE])
+            try:
+                self.log('sdk: ' + platform.sdk_version())
+            except Exception:
+                self.log(traceback.format_exc())
+
         self.refresh_entries()
 
     def refresh_entries(self):
