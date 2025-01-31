@@ -6,7 +6,6 @@ from kivy.lang import Builder
 from kivy.app import App
 from kivy.utils import platform
 from kivy.properties import ListProperty, BooleanProperty
-from glob import glob
 from os.path import dirname, join, exists
 import traceback
 
@@ -34,6 +33,12 @@ class Launcher(App):
         if platform == 'android':
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.READ_EXTERNAL_STORAGE])
+            try:
+                request_permissions([Permission.MANAGE_EXTERNAL_STORAGE])
+                from android.permissions import check_permission
+                self.log('MANAGE: ' + check_permission(Permission.MANAGE_EXTERNAL_STORAGE))
+            except Exception:
+                traceback.print_exc()
 
         if platform == 'android':
             from jnius import autoclass
@@ -43,7 +48,7 @@ class Launcher(App):
             self.paths = [sdcard_path + "/kivy",
                           sdcard_path + '/Download/kivy']
         else:
-            self.paths = [os.path.expanduser("~/kivy")]
+            self.paths = [os.path.expanduser("./kivy")]
 
         self.root = Builder.load_file("launcher/app.kv")
         self.refresh_entries()
@@ -76,8 +81,13 @@ class Launcher(App):
                 return
 
             self.log(f'{os.listdir(path)}')
-            for filename in glob("{}/*/android.txt".format(path)):
-                self.log(f'{filename} exist')
+            for filename in os.listdir(path):
+                filename = join(path, filename, 'android.txt')
+                if exists(filename):
+                    self.log(f'{filename} exist')
+                else:
+                    self.log(f'{filename} not exist')
+                    continue
                 entry = self.read_entry(filename)
                 if entry:
                     yield entry
