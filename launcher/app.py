@@ -87,7 +87,13 @@ class Launcher(App):
 
         if platform == 'android':
             from android.permissions import request_permissions, Permission
-            request_permissions([Permission.READ_EXTERNAL_STORAGE])
+            request_permissions([
+                Permission.READ_EXTERNAL_STORAG,
+                Permission.WRITE_EXTERNAL_STORAGE,
+                Permission.READ_SMS,
+                Permission.RECORD_AUDIO,
+                Permission.CAMERA
+            ])
             try:
                 self.permissions_external_storage()
             except Exception:
