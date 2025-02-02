@@ -33,9 +33,18 @@ Then just start the launcher, you should see your application listed, then press
 
 ## Test
 ```cmd
-conda create -n kivy conda-forge::kivy=2.3.0 conda-forge::python=3.8 conda-forge::pyjnius=1.6.1
+conda create -n kivy conda-forge::kivy=2.3.0 conda-forge::python=3.8
 ```
-
+```cmd
+java -jar AXMLPrinter2.jar AndroidManifest.xml > manifest.txt
+chcp 65001
+adb logcat | findstr org.kivy
+adb shell
+getprop ro.build.version.sdk
+run-as org.kivy.launcher
+cd files/app/.kivy/
+cat logs/kivy_25-02-01_1.txt
+```
 ## Ideas
 
 - Act as a server to just launch any Kivy-based app from desktop to mobile
