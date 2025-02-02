@@ -75,6 +75,11 @@ class Launcher(App):
                 .getAbsolutePath()
             self.paths = [sdcard_path + "/kivy",
                           sdcard_path + '/Download/kivy']
+            try:
+                from android.storage import app_storage_path
+                self.paths.append(join(app_storage_path(), 'app', 'kivy'))
+            except Exception as e:
+                self.log(f'{e}')
         else:
             self.paths = [os.path.expanduser("./kivy")]
 
@@ -112,27 +117,31 @@ class Launcher(App):
 
     def find_entries(self, path=None, paths=None):
         self.log(f'looking for entries in {paths} or {path}')
-        if paths is not None:
-            for path in paths:
-                for entry in self.find_entries(path=path):
-                    yield entry
+        try:
+            if paths is not None:
+                for path in paths:
+                    for entry in self.find_entries(path=path):
+                        yield entry
 
-        elif path is not None:
-            if not exists(path):
-                self.log(f'{path} does not exist')
-                return
+            elif path is not None:
+                if not exists(path):
+                    self.log(f'{path} does not exist')
+                    return
 
-            self.log(f'{os.listdir(path)}')
-            for filename in os.listdir(path):
-                filename = join(path, filename, 'android.txt')
-                if exists(filename):
-                    self.log(f'{filename} exist')
-                else:
-                    self.log(f'{filename} not exist')
-                    continue
-                entry = self.read_entry(filename)
-                if entry:
-                    yield entry
+                self.log(f'{os.listdir(path)}')
+                for filename in os.listdir(path):
+                    filename = join(path, filename, 'android.txt')
+                    if exists(filename):
+                        self.log(f'{filename} exist')
+                    else:
+                        self.log(f'{filename} not exist')
+                        continue
+                    entry = self.read_entry(filename)
+                    if entry:
+                        yield entry
+        except Exception as e:
+            self.log(f'{e}')
+            return []
 
     def read_entry(self, filename):
         self.log(f'reading entry {filename}')
