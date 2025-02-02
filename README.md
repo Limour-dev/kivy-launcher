@@ -45,6 +45,13 @@ run-as org.kivy.launcher
 cd files/app/.kivy/
 cat logs/kivy_25-02-01_1.txt
 ```
+```cmd
+adb shell
+run-as org.kivy.launcher
+cd ~/files/app
+mkdir -p kivy/debugger
+cp -r /storage/emulated/0/kivy/debugger kivy
+```
 ## Ideas
 
 - Act as a server to just launch any Kivy-based app from desktop to mobile
