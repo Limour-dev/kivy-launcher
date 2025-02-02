@@ -87,17 +87,24 @@ class Launcher(App):
 
         if platform == 'android':
             from android.permissions import request_permissions, Permission
-            request_permissions([
-                Permission.READ_EXTERNAL_STORAG,
-                Permission.WRITE_EXTERNAL_STORAGE,
-                Permission.READ_SMS,
-                Permission.RECORD_AUDIO,
-                Permission.CAMERA
-            ])
             try:
+                request_permissions([
+                    Permission.READ_EXTERNAL_STORAGE,
+                    Permission.WRITE_EXTERNAL_STORAGE,
+                    Permission.READ_SMS,
+                    Permission.RECORD_AUDIO,
+                    Permission.CAMERA
+                ])
                 self.permissions_external_storage()
             except Exception:
                 self.log(traceback.format_exc())
+                try:
+                    request_permissions([
+                        Permission.READ_EXTERNAL_STORAGE,
+                        Permission.WRITE_EXTERNAL_STORAGE,
+                    ])
+                except Exception:
+                    self.log(traceback.format_exc())
 
         self.refresh_entries()
 
