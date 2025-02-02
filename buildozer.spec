@@ -149,7 +149,7 @@ p4a.branch = release-2024.01.21
 # (str) launchMode to set for the main activity
 android.manifest.launch_mode = standard
 
-android.extra_manifest_application_arguments = ./android/extra_manifest_application_arguments.xml
+# android.extra_manifest_application_arguments = ./android/extra_manifest_application_arguments.xml
 
 # (list) Android additionnal libraries to copy into libs/armeabi
 #android.add_libs_armeabi = libs/android/*.so
