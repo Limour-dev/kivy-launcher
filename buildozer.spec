@@ -36,7 +36,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy, android, soupsieve, beautifulsoup4, aiofiles, aiohappyeyeballs, aiosignal, async-timeout, frozenlist, multidict, yarl, attrs, propcache, aiohttp, idna, httpcore, h11, anyio, httpx 
+requirements = python3, kivy, android, soupsieve, beautifulsoup4, aiofiles, aiohappyeyeballs, aiosignal, async-timeout, frozenlist, multidict, yarl, attrs, propcache, charset-normalizer, aiohttp, idna, httpcore, h11, anyio, httpx 
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
