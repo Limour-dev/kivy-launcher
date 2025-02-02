@@ -56,12 +56,13 @@ cp -r /storage/emulated/0/kivy/debugger kivy
 from aiohttp import web
 import aiofiles
 from os.path import join
-from threading import Thread
+
 try:
     from android.storage import primary_external_storage_path
-    root = join(primary_external_storage_path(), 'Download')
+    root = join(primary_external_storage_path(), 'Download')        
 except Exception as e:
     root = '.'
+    print(e)
 
 def get_local_ips():
     try:
@@ -98,14 +99,35 @@ async def handle(req):
     
     return web.Response(text=f"{filename} uploaded!")
 
+import logging
+class CustomHandler(logging.NullHandler):
+    def emit(self, record):
+        print(f"Custom log: {record.getMessage()}")
+    def handle(self, record):
+        print(f"Custom log: {record.getMessage()}")
+custom_handler = CustomHandler()
+
+from aiohttp.log import access_logger, client_logger, \
+internal_logger, server_logger, web_logger, ws_logger  
+access_logger.addHandler(custom_handler)
+client_logger.addHandler(custom_handler)
+internal_logger.addHandler(custom_handler)
+server_logger.addHandler(custom_handler)
+web_logger.addHandler(custom_handler)
+ws_logger.addHandler(custom_handler)
+
 app = web.Application(client_max_size=20*1024**2)
+
 app.add_routes([web.route('*', '/', handle)])
+runner = web.AppRunner(app)
 
-def main():
+async def main():
     get_local_ips()
-    web.run_app(app, host='0.0.0.0', port=8888) 
+    await runner.setup()
+    site = web.TCPSite(runner, host='0.0.0.0', port=8888)
+    await site.start()
 
-Thread(target=main, daemon=True).start()
+asyncrun(0, main)
 ```
 ## Ideas
 
