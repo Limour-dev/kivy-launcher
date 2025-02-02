@@ -52,6 +52,61 @@ cd ~/files/app
 mkdir -p kivy/debugger
 cp -r /storage/emulated/0/kivy/debugger kivy
 ```
+```python
+from aiohttp import web
+import aiofiles
+from os.path import join
+from threading import Thread
+try:
+    from android.storage import primary_external_storage_path
+    root = join(primary_external_storage_path(), 'Download')
+except Exception as e:
+    root = '.'
+
+def get_local_ips():
+    try:
+        import socket
+        hostname = socket.gethostname()
+        print(hostname)
+        _, _, addr_list = socket.gethostbyname_ex(hostname)
+        print(addr_list)
+    except Exception as e:
+        print(e)
+
+async def handle(req):
+    if req.method == 'GET':
+        return web.Response(text='''
+            <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <input type="submit">
+            </form>
+        ''', content_type='text/html')
+    
+    reader = await req.multipart()
+    field = await reader.next()
+    
+    if field.name != 'file':
+        return web.Response(text="No file uploaded", status=400)
+    
+    filename = join(root, field.filename)
+    async with aiofiles.open(filename, 'wb') as f:
+        while True:
+            chunk = await field.read_chunk()
+            if not chunk:
+                break
+            await f.write(chunk)
+    
+    return web.Response(text=f"{filename} uploaded!")
+
+app = web.Application(client_max_size=20*1024**2)
+app.add_routes([web.route('*', '/', handle)])
+
+def main():
+    get_local_ips()
+    web.run_app(app, host='0.0.0.0', port=8888) 
+
+Thread(target=main, daemon=True).start()
+```
 ## Ideas
 
 - Act as a server to just launch any Kivy-based app from desktop to mobile
